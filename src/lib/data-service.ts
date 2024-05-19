@@ -47,7 +47,6 @@ export const getCabins = async function () {
     throw new Error("Cabins could not be loaded");
   }
 
-  console.log(data);
   return data as CabinType[];
 };
 

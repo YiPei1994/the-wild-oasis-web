@@ -1,5 +1,7 @@
 import { eachDayOfInterval } from "date-fns";
 
+import { supabase } from "./supbase";
+import { CabinType } from "./types";
 /////////////
 // GET
 
@@ -45,7 +47,8 @@ export const getCabins = async function () {
     throw new Error("Cabins could not be loaded");
   }
 
-  return data;
+  console.log(data);
+  return data as CabinType[];
 };
 
 // Guests are uniquely identified by their email address

@@ -1,5 +1,5 @@
 function CabinsPage() {
-  return <div>CabinsPage</div>;
+  return <div></div>;
 }
 
 export default CabinsPage;

@@ -1,11 +1,12 @@
 import { eachDayOfInterval } from "date-fns";
 
 import { supabase } from "./supbase";
-import { CabinType } from "./types";
+import { Booking, CabinType } from "./types";
+import { notFound } from "next/navigation";
 /////////////
 // GET
 
-export async function getCabin(id) {
+export async function getCabin(id: number) {
   const { data, error } = await supabase
     .from("cabins")
     .select("*")
@@ -17,9 +18,10 @@ export async function getCabin(id) {
 
   if (error) {
     console.error(error);
+    notFound();
   }
 
-  return data;
+  return data as CabinType;
 }
 
 export async function getCabinPrice(id) {
@@ -77,7 +79,7 @@ export async function getBooking(id) {
   return data;
 }
 
-export async function getBookings(guestId) {
+export async function getBookings(guestId: number) {
   const { data, error, count } = await supabase
     .from("bookings")
     // We actually also need data on the cabins as well. But let's ONLY take the data that we actually need, in order to reduce downloaded data.
@@ -92,7 +94,7 @@ export async function getBookings(guestId) {
     throw new Error("Bookings could not get loaded");
   }
 
-  return data;
+  return data as Booking[];
 }
 
 export async function getBookedDatesByCabinId(cabinId) {

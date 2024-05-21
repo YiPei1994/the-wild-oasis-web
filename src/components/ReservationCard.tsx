@@ -27,6 +27,7 @@ function ReservationCard({ booking }) {
     <div className="flex border border-primary-800">
       <div className="relative h-32 aspect-square">
         <Image
+          fill
           src={image}
           alt={`Cabin ${name}`}
           className="object-cover border-r border-primary-800"

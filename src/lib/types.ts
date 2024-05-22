@@ -1,3 +1,5 @@
+import { DateRange } from "react-day-picker";
+
 export type CabinType = {
   id: number;
   name: string;
@@ -38,3 +40,5 @@ export type Settings = {
   maxGuestsPerBooking: number;
   breakfastPrice: number;
 };
+
+export type Range = DateRange | undefined;

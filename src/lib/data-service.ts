@@ -1,7 +1,7 @@
 import { eachDayOfInterval } from "date-fns";
 
 import { supabase } from "./supbase";
-import { Booking, CabinType } from "./types";
+import { Booking, CabinType, Country, Settings } from "./types";
 import { notFound } from "next/navigation";
 /////////////
 // GET
@@ -24,7 +24,7 @@ export async function getCabin(id: number) {
   return data as CabinType;
 }
 
-export async function getCabinPrice(id) {
+export async function getCabinPrice(id: number) {
   const { data, error } = await supabase
     .from("cabins")
     .select("regularPrice, discount")
@@ -53,7 +53,7 @@ export const getCabins = async function () {
 };
 
 // Guests are uniquely identified by their email address
-export async function getGuest(email) {
+export async function getGuest(email: string) {
   const { data, error } = await supabase
     .from("guests")
     .select("*")
@@ -64,7 +64,7 @@ export async function getGuest(email) {
   return data;
 }
 
-export async function getBooking(id) {
+export async function getBooking(id: number) {
   const { data, error, count } = await supabase
     .from("bookings")
     .select("*")
@@ -97,17 +97,17 @@ export async function getBookings(guestId: number) {
   return data as Booking[];
 }
 
-export async function getBookedDatesByCabinId(cabinId) {
-  let today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
-  today = today.toISOString();
+export async function getBookedDatesByCabinId(cabinId: number) {
+  let today: Date = new Date();
+  today.setUTCHours(0, 0, 0, 0); // Set to start of the day in UTC
+  let todayISOString: string = today.toISOString(); // Get the ISO string representation
 
   // Getting all bookings
   const { data, error } = await supabase
     .from("bookings")
     .select("*")
     .eq("cabinId", cabinId)
-    .or(`startDate.gte.${today},status.eq.checked-in`);
+    .or(`startDate.gte.${todayISOString},status.eq.checked-in`);
 
   if (error) {
     console.error(error);
@@ -135,7 +135,7 @@ export async function getSettings() {
     throw new Error("Settings could not be loaded");
   }
 
-  return data;
+  return data as Settings;
 }
 
 export async function getCountries() {
@@ -144,7 +144,7 @@ export async function getCountries() {
       "https://restcountries.com/v2/all?fields=name,flag"
     );
     const countries = await res.json();
-    return countries;
+    return countries as Country[];
   } catch {
     throw new Error("Could not fetch countries");
   }

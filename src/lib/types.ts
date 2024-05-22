@@ -23,3 +23,18 @@ export type Booking = {
     image: string;
   }[];
 };
+
+export type Country = {
+  name: string;
+  flag: string;
+  independent: boolean;
+};
+
+export type Settings = {
+  id: number;
+  created_at: string;
+  minBookingLength: number;
+  maxBookingLength: number;
+  maxGuestsPerBooking: number;
+  breakfastPrice: number;
+};

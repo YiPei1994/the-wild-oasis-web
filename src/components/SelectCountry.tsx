@@ -1,7 +1,19 @@
 import { getCountries } from "@/lib/data-service";
 
-async function SelectCountry({ defaultCountry, name, id, className }) {
+type SelectCountryProps = {
+  defaultCountry: string;
+  name: string;
+  id: string;
+  className: string;
+};
+async function SelectCountry({
+  defaultCountry,
+  name,
+  id,
+  className,
+}: SelectCountryProps) {
   const countries = await getCountries();
+
   const flag =
     countries.find((country) => country.name === defaultCountry)?.flag ?? "";
 

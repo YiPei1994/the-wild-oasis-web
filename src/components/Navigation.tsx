@@ -1,19 +1,16 @@
-"use client";
-
+import { auth } from "@/lib/auth";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
-export default function Navigation() {
-  const path = usePathname();
+export default async function Navigation() {
+  const user = await auth();
+
   return (
     <nav className="z-10 text-xl">
       <ul className="flex gap-16 items-center">
         <li>
           <Link
             href="/cabins"
-            className={`${
-              path.startsWith("/cabins") ? "text-accent-400" : ""
-            } hover:text-accent-400 transition-colors`}
+            className={` hover:text-accent-400 transition-colors`}
           >
             Cabins
           </Link>
@@ -21,22 +18,33 @@ export default function Navigation() {
         <li>
           <Link
             href="/about"
-            className={`${
-              path.startsWith("/about") ? "text-accent-400" : ""
-            } hover:text-accent-400 transition-colors`}
+            className={` hover:text-accent-400 transition-colors`}
           >
             About
           </Link>
         </li>
         <li>
-          <Link
-            href="/account"
-            className={`${
-              path.startsWith("/account") ? "text-accent-400" : ""
-            } hover:text-accent-400 transition-colors`}
-          >
-            Guest area
-          </Link>
+          {user?.user?.image ? (
+            <Link
+              href="/account"
+              className={`flex gap-4 items-center hover:text-accent-400 transition-colors`}
+            >
+              <img
+                src={user.user.image}
+                className="h-8 rounded-full"
+                alt={user.user.name}
+                referrerPolicy="no-referrer"
+              />
+              <span> Guest area</span>
+            </Link>
+          ) : (
+            <Link
+              href="/account"
+              className={` hover:text-accent-400 transition-colors`}
+            >
+              Guest area
+            </Link>
+          )}
         </li>
       </ul>
     </nav>

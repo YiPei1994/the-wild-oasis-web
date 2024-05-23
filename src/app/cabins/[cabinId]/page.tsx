@@ -1,9 +1,9 @@
 import { getCabin, getCabins } from "@/lib/data-service";
 
-import Reservation from "./Reservation";
-import { Suspense } from "react";
 import Spinner from "@/components/Spinner";
+import { Suspense } from "react";
 import Cabin from "./Cabin";
+import Reservation from "./Reservation";
 
 export async function generateMetadata({
   params,
@@ -39,6 +39,7 @@ export default async function CabinDetail({
         <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
           Reserve {name} today. Pay on arrival.
         </h2>
+
         <Suspense fallback={<Spinner />} key={id}>
           <Reservation cabin={cabin} />
         </Suspense>

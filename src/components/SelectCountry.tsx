@@ -1,4 +1,7 @@
-import { getCountries } from "@/lib/data-service";
+"use client";
+
+import { Country } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 type SelectCountryProps = {
   defaultCountry: string;
@@ -6,16 +9,33 @@ type SelectCountryProps = {
   id: string;
   className: string;
 };
-async function SelectCountry({
+function SelectCountry({
   defaultCountry,
   name,
   id,
   className,
 }: SelectCountryProps) {
-  const countries = await getCountries();
-
+  const [countries, setCountries] = useState<Country[]>();
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const res = await fetch(
+          "https://restcountries.com/v2/all?fields=name,flag"
+        );
+        if (!res.ok) {
+          throw new Error(`Failed to fetch countries: ${res.statusText}`);
+        }
+        const countries = await res.json();
+        setCountries(countries);
+      } catch (error) {
+        console.error("Could not fetch countries:", error);
+        throw error;
+      }
+    };
+    fetchCountries();
+  }, []);
   const flag =
-    countries.find((country) => country.name === defaultCountry)?.flag ?? "";
+    countries?.find((country) => country.name === defaultCountry)?.flag ?? "";
 
   return (
     <select
@@ -26,7 +46,7 @@ async function SelectCountry({
       className={className}
     >
       <option value="">Select country...</option>
-      {countries.map((c) => (
+      {countries?.map((c) => (
         <option key={c.name} value={`${c.name}%${c.flag}`}>
           {c.name}
         </option>

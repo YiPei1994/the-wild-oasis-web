@@ -138,18 +138,6 @@ export async function getSettings() {
   return data as Settings;
 }
 
-export async function getCountries() {
-  try {
-    const res = await fetch(
-      "https://restcountries.com/v2/all?fields=name,flag"
-    );
-    const countries = await res.json();
-    return countries as Country[];
-  } catch {
-    throw new Error("Could not fetch countries");
-  }
-}
-
 /////////////
 // CREATE
 
@@ -184,7 +172,14 @@ export async function createBooking(newBooking) {
 // UPDATE
 
 // The updatedFields is an object which should ONLY contain the updated data
-export async function updateGuest(id, updatedFields) {
+export async function updateGuest(
+  id: number,
+  updatedFields: {
+    nationality: string;
+    nationalID: string;
+    countryFlag: string;
+  }
+) {
   const { data, error } = await supabase
     .from("guests")
     .update(updatedFields)
@@ -196,7 +191,7 @@ export async function updateGuest(id, updatedFields) {
     console.error(error);
     throw new Error("Guest could not be updated");
   }
-  return data;
+  return data as Guest;
 }
 
 export async function updateBooking(id, updatedFields) {

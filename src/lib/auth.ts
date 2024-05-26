@@ -27,7 +27,7 @@ const authConfig = {
       }
     },
     async session({ session }: { session: ExtendedSession }) {
-      const guest = await getGuest(session.user?.email);
+      const guest = await getGuest(session?.user?.email);
       if (session && session.user) {
         session.user.guestId = guest.id;
       }

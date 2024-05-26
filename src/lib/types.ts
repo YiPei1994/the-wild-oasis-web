@@ -1,3 +1,4 @@
+import { Session, User } from "next-auth";
 import { DateRange } from "react-day-picker";
 
 export type CabinType = {
@@ -42,3 +43,22 @@ export type Settings = {
 };
 
 export type Range = DateRange | undefined;
+
+export type Guest = {
+  id: number;
+  created_at: string;
+  fullName: string;
+  email: string;
+  dateOfBirth: string;
+  gender: string;
+  nationalID: string;
+  nationality: string;
+  countryFlag: string;
+};
+
+export interface ExtendedUser extends User {
+  guestId?: number | undefined;
+}
+export interface ExtendedSession extends Session {
+  user?: ExtendedUser;
+}

@@ -1,7 +1,7 @@
 import { eachDayOfInterval } from "date-fns";
 
 import { supabase } from "./supbase";
-import { Booking, CabinType, Country, Settings } from "./types";
+import { Booking, CabinType, Country, Guest, Settings } from "./types";
 import { notFound } from "next/navigation";
 /////////////
 // GET
@@ -53,7 +53,7 @@ export const getCabins = async function () {
 };
 
 // Guests are uniquely identified by their email address
-export async function getGuest(email: string) {
+export async function getGuest(email: string | undefined | null) {
   const { data, error } = await supabase
     .from("guests")
     .select("*")
@@ -61,7 +61,7 @@ export async function getGuest(email: string) {
     .single();
 
   // No error here! We handle the possibility of no guest in the sign in callback
-  return data;
+  return data as Guest;
 }
 
 export async function getBooking(id: number) {
@@ -79,7 +79,7 @@ export async function getBooking(id: number) {
   return data;
 }
 
-export async function getBookings(guestId: number) {
+export async function getBookings(guestId: number | undefined) {
   const { data, error, count } = await supabase
     .from("bookings")
     // We actually also need data on the cabins as well. But let's ONLY take the data that we actually need, in order to reduce downloaded data.

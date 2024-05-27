@@ -6,7 +6,6 @@ export const metadata = {
   title: "profile",
 };
 
-export const revalidate = 5;
 export default async function Page() {
   const session = await auth();
 

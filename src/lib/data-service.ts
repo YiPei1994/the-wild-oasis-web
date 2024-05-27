@@ -79,12 +79,13 @@ export async function getBooking(id: number) {
   return data;
 }
 
-export async function getBookings(guestId: number | undefined) {
-  const { data, error, count } = await supabase
+export async function getBookings(
+  guestId: number | undefined
+): Promise<Booking[]> {
+  const { data, error } = await supabase
     .from("bookings")
-    // We actually also need data on the cabins as well. But let's ONLY take the data that we actually need, in order to reduce downloaded data.
     .select(
-      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)"
+      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, status, cabins(name, image)"
     )
     .eq("guestId", guestId)
     .order("startDate");
@@ -94,7 +95,16 @@ export async function getBookings(guestId: number | undefined) {
     throw new Error("Bookings could not get loaded");
   }
 
-  return data as Booking[];
+  // Ensure the data matches the Booking type structure
+  if (!data) {
+    throw new Error("No data received from the database");
+  }
+
+  return data.map((item) => ({
+    ...item,
+    // Ensuring cabins is an object, not an array
+    cabins: Array.isArray(item.cabins) ? item.cabins[0] : item.cabins,
+  })) as Booking[];
 }
 
 export async function getBookedDatesByCabinId(cabinId: number) {
@@ -171,29 +181,6 @@ export async function createBooking(newBooking) {
 /////////////
 // UPDATE
 
-// The updatedFields is an object which should ONLY contain the updated data
-export async function updateGuest(
-  id: number,
-  updatedFields: {
-    nationality: string;
-    nationalID: string;
-    countryFlag: string;
-  }
-) {
-  const { data, error } = await supabase
-    .from("guests")
-    .update(updatedFields)
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Guest could not be updated");
-  }
-  return data as Guest;
-}
-
 export async function updateBooking(id, updatedFields) {
   const { data, error } = await supabase
     .from("bookings")
@@ -205,19 +192,6 @@ export async function updateBooking(id, updatedFields) {
   if (error) {
     console.error(error);
     throw new Error("Booking could not be updated");
-  }
-  return data;
-}
-
-/////////////
-// DELETE
-
-export async function deleteBooking(id) {
-  const { data, error } = await supabase.from("bookings").delete().eq("id", id);
-
-  if (error) {
-    console.error(error);
-    throw new Error("Booking could not be deleted");
   }
   return data;
 }

@@ -1,4 +1,5 @@
 "use client";
+
 import { CabinType } from "@/lib/types";
 import { useReservation } from "@/store/ReservationStore";
 import { Session } from "next-auth";
@@ -10,7 +11,7 @@ type ReservationFromProps = {
 function ReservationForm({ cabin, user }: ReservationFromProps) {
   const { maxCapacity } = cabin;
   const { range } = useReservation();
-  console.log(user.user);
+
   return (
     <div className="scale-[1.01]">
       <div className="bg-primary-800 text-primary-300 px-16 py-2 flex justify-between items-center">

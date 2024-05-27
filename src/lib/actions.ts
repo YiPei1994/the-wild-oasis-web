@@ -1,10 +1,13 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supbase";
+import { ExtendedSession } from "./types";
+import { getBookings } from "./data-service";
 
 export async function updateProfile(formData: FormData): Promise<void> {
-  const session = await auth();
+  const session: ExtendedSession | null = await auth();
   if (!session) throw new Error("You must be logged in.");
 
   const nationalID = formData.get("nationalID") as string;
@@ -32,6 +35,26 @@ export async function updateProfile(formData: FormData): Promise<void> {
     console.error(error);
     throw new Error("Guest could not be updated");
   }
+  revalidatePath("/account/profile");
+}
+
+export async function deleteBooking(id: number) {
+  const session: ExtendedSession | null = await auth();
+  if (!session) throw new Error("You must be logged in.");
+
+  const bookings = await getBookings(session.user?.guestId);
+
+  const exist = bookings.find((booking) => booking.id === id);
+
+  if (!exist) throw new Error("no such booking");
+
+  const { error } = await supabase.from("bookings").delete().eq("id", id);
+
+  if (error) {
+    throw new Error("Booking could not be deleted");
+  }
+
+  revalidatePath("/account/reservations");
 }
 
 export async function signInAction() {

@@ -21,10 +21,11 @@ export type Booking = {
   totalPrice: number;
   guestId: number;
   cabinId: number;
+  status: boolean;
   cabins: {
     name: string;
     image: string;
-  }[];
+  };
 };
 
 export type Country = {

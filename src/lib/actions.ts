@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supbase";
 import { ExtendedSession } from "./types";
-import { getBookings } from "./data-service";
+import { getBooking, getBookings } from "./data-service";
+import { redirect } from "next/navigation";
 
 export async function updateProfile(formData: FormData): Promise<void> {
   const session: ExtendedSession | null = await auth();
@@ -55,6 +56,37 @@ export async function deleteBooking(id: number) {
   }
 
   revalidatePath("/account/reservations");
+}
+
+export async function updateBooking(formData: FormData) {
+  const session: ExtendedSession | null = await auth();
+  if (!session) throw new Error("You must be logged in.");
+
+  const bookingId = Number(formData.get("reservationId"));
+  const booking = await getBooking(bookingId);
+  const exist = booking.guestId === session.user?.guestId;
+  if (!exist)
+    throw new Error("this booking does not belong to same logged user.");
+
+  const updatedFields = {
+    numGuests: formData.get("numGuests"),
+    observations: formData.get("observations")?.slice(0, 1000),
+  };
+
+  const { error } = await supabase
+    .from("bookings")
+    .update(updatedFields)
+    .eq("id", bookingId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be updated");
+  }
+  revalidatePath("/account/reservations");
+  revalidatePath(`/account/reservations/edit/${bookingId}`);
+  redirect("/account/reservations");
 }
 
 export async function signInAction() {

@@ -1,7 +1,14 @@
 import { eachDayOfInterval } from "date-fns";
 
 import { supabase } from "./supbase";
-import { Booking, CabinType, Country, Guest, Settings } from "./types";
+import {
+  Booking,
+  CabinType,
+  Country,
+  Guest,
+  ReservationType,
+  Settings,
+} from "./types";
 import { notFound } from "next/navigation";
 /////////////
 // GET
@@ -76,7 +83,7 @@ export async function getBooking(id: number) {
     throw new Error("Booking could not get loaded");
   }
 
-  return data;
+  return data as ReservationType;
 }
 
 export async function getBookings(
@@ -175,23 +182,5 @@ export async function createBooking(newBooking) {
     throw new Error("Booking could not be created");
   }
 
-  return data;
-}
-
-/////////////
-// UPDATE
-
-export async function updateBooking(id, updatedFields) {
-  const { data, error } = await supabase
-    .from("bookings")
-    .update(updatedFields)
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Booking could not be updated");
-  }
   return data;
 }

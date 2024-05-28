@@ -63,3 +63,21 @@ export interface ExtendedUser extends User {
 export interface ExtendedSession extends Session {
   user?: ExtendedUser;
 }
+
+export type ReservationType = {
+  id: number;
+  created_at: string;
+  startDate: string;
+  endDate: string;
+  numNights: number;
+  numGuests: number;
+  cabinPrice: number;
+  extrasPrice: number;
+  totalPrice: number;
+  status: string;
+  hasBreakfast: boolean;
+  isPaid: boolean;
+  observations: string;
+  cabinId: number;
+  guestId: number;
+};

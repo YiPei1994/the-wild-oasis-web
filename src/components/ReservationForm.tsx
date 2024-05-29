@@ -1,16 +1,30 @@
 "use client";
 
+import { createBooking } from "@/lib/actions";
 import { CabinType } from "@/lib/types";
 import { useReservation } from "@/store/ReservationStore";
+import { format } from "date-fns";
 import { Session } from "next-auth";
+import SubmitButton from "./SubmitButton";
 
 type ReservationFromProps = {
   cabin: CabinType;
   user: Session;
 };
+
+function formatDateString(dateString: string) {
+  // Parse the date string into a Date object
+  const date = new Date(dateString);
+
+  // Format the date object into the desired format
+  return format(date, "yyyy-MM-dd HH:mm:ss");
+}
 function ReservationForm({ cabin, user }: ReservationFromProps) {
   const { maxCapacity } = cabin;
-  const { range } = useReservation();
+  const { range, resetRange } = useReservation();
+
+  const startDate = range?.from && formatDateString(String(range?.from));
+  const endDate = range?.to && formatDateString(String(range?.to));
 
   return (
     <div className="scale-[1.01]">
@@ -28,7 +42,19 @@ function ReservationForm({ cabin, user }: ReservationFromProps) {
         </div>
       </div>
 
-      <form className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col">
+      <form
+        action={async (formData: FormData) => {
+          await createBooking(formData), resetRange();
+        }}
+        className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col"
+      >
+        <input type="hidden" name="cabinId" defaultValue={cabin.id} />
+        <input
+          type="hidden"
+          name="rangeFrom"
+          defaultValue={String(startDate)}
+        />
+        <input type="hidden" name="rangeTo" defaultValue={String(endDate)} />
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select
@@ -63,9 +89,7 @@ function ReservationForm({ cabin, user }: ReservationFromProps) {
         <div className="flex justify-end items-center gap-6">
           <p className="text-primary-300 text-base">Start by selecting dates</p>
 
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-            Reserve now
-          </button>
+          <SubmitButton>Reserve now</SubmitButton>
         </div>
       </form>
     </div>

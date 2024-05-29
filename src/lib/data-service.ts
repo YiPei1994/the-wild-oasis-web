@@ -158,28 +158,15 @@ export async function getSettings() {
 /////////////
 // CREATE
 
-export async function createGuest(newGuest) {
+export async function createGuest(newGuest: {
+  email: string | null | undefined;
+  fullName: string | null | undefined;
+}) {
   const { data, error } = await supabase.from("guests").insert([newGuest]);
 
   if (error) {
     console.error(error);
     throw new Error("Guest could not be created");
-  }
-
-  return data;
-}
-
-export async function createBooking(newBooking) {
-  const { data, error } = await supabase
-    .from("bookings")
-    .insert([newBooking])
-    // So that the newly created object gets returned!
-    .select()
-    .single();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Booking could not be created");
   }
 
   return data;

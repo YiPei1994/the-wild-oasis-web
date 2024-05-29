@@ -1,11 +1,12 @@
 "use server";
 
+import { differenceInDays } from "date-fns";
 import { revalidatePath } from "next/cache";
-import { auth, signIn, signOut } from "./auth";
-import { supabase } from "./supbase";
-import { ExtendedSession } from "./types";
-import { getBooking, getBookings } from "./data-service";
 import { redirect } from "next/navigation";
+import { auth, signIn, signOut } from "./auth";
+import { getBooking, getBookings, getCabin, getSettings } from "./data-service";
+import { supabase } from "./supbase";
+import { ExtendedSession, ReservationType } from "./types";
 
 export async function updateProfile(formData: FormData): Promise<void> {
   const session: ExtendedSession | null = await auth();
@@ -39,6 +40,56 @@ export async function updateProfile(formData: FormData): Promise<void> {
   revalidatePath("/account/profile");
 }
 
+export async function createBooking(formData: FormData) {
+  const session: ExtendedSession | null = await auth();
+  if (!session) throw new Error("You must be logged in.");
+  const guestId = session.user?.guestId;
+  const cabinId = Number(formData.get("cabinId"));
+  if (!guestId || !cabinId) return;
+  const cabin = await getCabin(cabinId);
+  const settings = await getSettings();
+  const fromDate = String(formData.get("rangeFrom"));
+  const toDate = String(formData.get("rangeTo"));
+  const numGuests = Number(formData.get("numGuests"));
+  const observations = String(formData.get("observations")?.slice(0, 1000));
+
+  const numNights = differenceInDays(toDate, fromDate);
+  const { regularPrice, discount } = cabin;
+  const cabinPrice = (regularPrice - discount) * numNights;
+  const totalPrice =
+    cabinPrice + numGuests * settings.breakfastPrice * numNights;
+  const newBooking: ReservationType = {
+    cabinId,
+    guestId,
+    startDate: fromDate,
+    endDate: toDate,
+    numGuests,
+    observations,
+    cabinPrice,
+    numNights,
+    totalPrice: cabinPrice,
+    status: "unconfirmed",
+    hasBreakfast: false,
+    isPaid: false,
+    extrasPrice: 0,
+  };
+
+  const { error } = await supabase
+    .from("bookings")
+    .insert(newBooking)
+    // So that the newly created object gets returned!
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be created");
+  }
+
+  revalidatePath("/account/reservations");
+  revalidatePath(`/cabins/${cabinId}`);
+  redirect("/cabins/thankyou");
+}
 export async function deleteBooking(id: number) {
   const session: ExtendedSession | null = await auth();
   if (!session) throw new Error("You must be logged in.");

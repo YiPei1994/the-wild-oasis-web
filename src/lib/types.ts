@@ -65,8 +65,8 @@ export interface ExtendedSession extends Session {
 }
 
 export type ReservationType = {
-  id: number;
-  created_at: string;
+  id?: number;
+  created_at?: string;
   startDate: string;
   endDate: string;
   numNights: number;

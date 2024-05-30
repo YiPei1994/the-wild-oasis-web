@@ -10,13 +10,13 @@ import {
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 
-function isAlreadyBooked(range: Range, datesArr: Date[]) {
+function isAlreadyBooked(range: Range, datesArr: any) {
   if (!range || datesArr) return;
   return (
     range.from &&
     range.to &&
-    datesArr.some((date) =>
-      isWithinInterval(date, { start: range.from, end: range.to })
+    datesArr.some((date: string) =>
+      isWithinInterval(date, { start: range.from!, end: range.to! })
     )
   );
 }

@@ -24,7 +24,7 @@ export default async function Navigation() {
           </Link>
         </li>
         <li>
-          {user?.user?.image ? (
+          {user?.user?.image && user?.user?.name ? (
             <Link
               href="/account"
               className={`flex gap-4 items-center hover:text-accent-400 transition-colors`}

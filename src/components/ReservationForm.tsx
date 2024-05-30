@@ -35,8 +35,8 @@ function ReservationForm({ cabin, user }: ReservationFromProps) {
           <img
             referrerPolicy="no-referrer"
             className="h-8 rounded-full"
-            src={user?.user?.image}
-            alt={user?.user?.name}
+            src={user?.user?.image!}
+            alt={user?.user?.name!}
           />
           <p>{user?.user?.name}</p>
         </div>

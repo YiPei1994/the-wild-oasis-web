@@ -28,3 +28,10 @@ This project serves as a practice ground for exploring:
 * clone the repo
 * cd repo and npm install
 * npm run dev
+
+**Demo:**
+
+* Link: [The Wild Oasis](https://the-wild-oasis-web.vercel.app/)
+
+  
+

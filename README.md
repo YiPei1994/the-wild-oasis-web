@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# The Wild Oasis
 
-## Getting Started
+This project allows users to manage reservations for a fictional oasis experience. Users can:
 
-First, run the development server:
+* **Log in** using a Google provider for secure authentication.
+* **Make reservations** on specific dates and timeslots within the timeline.
+* **Manage reservations (CRUD operations)**: view, create, update, and delete their own reservations.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Motivation:**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This project serves as a practice ground for exploring:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Next.js App Routes with Server-Side Rendering (SSR) Server Actions:** This approach allows for dynamic content generation and data fetching.
+* **New React Hooks:**
+    * `useFormStatus`: Likely used for managing form validation and submission states.
+    * `useTransitions`:  Potentially used for handling UI animations or state transitions.
+    * `useOpmitics`: Might be a custom hook or a third-party library for tracking user interactions or website analytics.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**Technologies Used:**
 
-## Learn More
+* Next.js: A React framework for building server-rendered and statically generated web applications.
+* Tailwind CSS: A utility-first CSS framework for rapid UI development.
+* TypeScript: A superset of JavaScript that adds static typing for improved code maintainability.
+* Supabase: A full-featured open-source backend-as-a-service (BaaS) platform for managing databases, authentication, and storage.
 
-To learn more about Next.js, take a look at the following resources:
+**Quick start:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+* clone the repo
+* cd repo and npm install
+* npm run dev
